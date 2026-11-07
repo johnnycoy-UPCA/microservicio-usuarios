@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: microservicio-usuarios
+
+server:
+  port: 8081
