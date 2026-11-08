@@ -1,6 +1,9 @@
 spring:
   application:
     name: microservicio-usuarios
+  
+  profiles:
+    default: desarrollo
 
 server:
   port: 8081
