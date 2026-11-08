@@ -3,7 +3,7 @@ spring:
     url: jdbc:h2:mem:usuarios_prueba;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
     driver-class-name: org.h2.Driver
     username: sa
-    password:
+    password: ""
 
   jpa:
     hibernate:

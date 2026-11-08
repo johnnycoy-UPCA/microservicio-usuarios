@@ -11,6 +11,8 @@ public final class CodigosError {
     public static final String ERROR_INTERNO = "GEN-001";
     public static final String FECHA_NACIMIENTO_OBLIGATORIA = "USR-005";
     public static final String CLAVE_OBLIGATORIA = "USR-006";
+    public static final String SOLICITUD_INVALIDA = "VAL-001";
+    public static final String CUERPO_SOLICITUD_INVALIDO = "VAL-002";
 
     private CodigosError() {
         throw new IllegalStateException(
