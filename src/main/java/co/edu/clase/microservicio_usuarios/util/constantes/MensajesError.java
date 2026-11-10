@@ -79,6 +79,24 @@ public final class MensajesError {
 
 	public static final String CUERPO_SOLICITUD_INVALIDO =
 		"El cuerpo de la solicitud no tiene un formato válido";
+
+	public static final String CREDENCIALES_INVALIDAS =
+		"El correo o la clave son incorrectos";
+
+	public static final String USUARIO_INACTIVO =
+		"El usuario se encuentra inactivo";
+
+	public static final String TOKEN_INVALIDO =
+		"El token de autenticación no es válido";
+
+	public static final String TOKEN_EXPIRADO =
+		"El token de autenticación ha expirado";
+
+	public static final String TOKEN_AUSENTE =
+		"La solicitud requiere un token de autenticación";
+	
+	public static final String ACCESO_DENEGADO =
+        "El usuario autenticado no tiene permisos para realizar esta operación";
 			
 	private MensajesError() {
 		throw new IllegalStateException(

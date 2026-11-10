@@ -15,3 +15,8 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+
+seguridad:
+  jwt:
+    secreto: MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=
+    duracion-milisegundos: 3600000

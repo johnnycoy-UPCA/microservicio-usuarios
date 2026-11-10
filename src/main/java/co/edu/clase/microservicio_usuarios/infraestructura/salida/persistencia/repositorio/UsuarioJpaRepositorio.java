@@ -1,6 +1,9 @@
 package co.edu.clase.microservicio_usuarios.infraestructura.salida.persistencia.repositorio;
 
 import co.edu.clase.microservicio_usuarios.infraestructura.salida.persistencia.entidad.UsuarioEntidad;
+
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UsuarioJpaRepositorio
@@ -9,4 +12,6 @@ public interface UsuarioJpaRepositorio
     boolean existsByCorreoIgnoreCase(String correo);
 
     boolean existsByDocumentoIdentidad(String documentoIdentidad);
+
+    Optional<UsuarioEntidad> findByCorreoIgnoreCase(String correo);
 }

@@ -25,3 +25,8 @@ spring:
       path: /h2-console
       settings:
         web-allow-others: false
+
+seguridad:
+  jwt:
+    secreto: ${JWT_SECRETO}
+    duracion-milisegundos: ${JWT_DURACION_MILISEGUNDOS:3600000}

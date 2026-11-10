@@ -5,49 +5,60 @@ import co.edu.clase.microservicio_usuarios.dominio.spi.UsuarioPersistenciaPuerto
 import co.edu.clase.microservicio_usuarios.infraestructura.salida.persistencia.entidad.UsuarioEntidad;
 import co.edu.clase.microservicio_usuarios.infraestructura.salida.persistencia.mapeador.UsuarioPersistenciaMapeador;
 import co.edu.clase.microservicio_usuarios.infraestructura.salida.persistencia.repositorio.UsuarioJpaRepositorio;
+
+import java.util.Optional;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class UsuarioPersistenciaAdaptador
-        implements UsuarioPersistenciaPuerto {
+	implements UsuarioPersistenciaPuerto {
 
-    private final UsuarioJpaRepositorio usuarioJpaRepositorio;
-    private final UsuarioPersistenciaMapeador usuarioPersistenciaMapeador;
+	private final UsuarioJpaRepositorio usuarioJpaRepositorio;
+	private final UsuarioPersistenciaMapeador usuarioPersistenciaMapeador;
 
-    public UsuarioPersistenciaAdaptador(
-            UsuarioJpaRepositorio usuarioJpaRepositorio,
-            UsuarioPersistenciaMapeador usuarioPersistenciaMapeador) {
+	public UsuarioPersistenciaAdaptador(
+		UsuarioJpaRepositorio usuarioJpaRepositorio,
+		UsuarioPersistenciaMapeador usuarioPersistenciaMapeador) {
 
-        this.usuarioJpaRepositorio = usuarioJpaRepositorio;
-        this.usuarioPersistenciaMapeador =
-                usuarioPersistenciaMapeador;
-    }
+		this.usuarioJpaRepositorio = usuarioJpaRepositorio;
+		this.usuarioPersistenciaMapeador =
+			usuarioPersistenciaMapeador;
+	}
 
-    @Override
-    @Transactional(readOnly = true)
-    public boolean existePorCorreo(String correo) {
-        return usuarioJpaRepositorio.existsByCorreoIgnoreCase(correo);
-    }
+	@Override
+	@Transactional(readOnly = true)
+	public boolean existePorCorreo(String correo) {
+		return usuarioJpaRepositorio.existsByCorreoIgnoreCase(correo);
+	}
 
-    @Override
-    @Transactional(readOnly = true)
-    public boolean existePorDocumentoIdentidad(
-            String documentoIdentidad) {
+	@Override
+	@Transactional(readOnly = true)
+	public boolean existePorDocumentoIdentidad(
+			String documentoIdentidad) {
 
-        return usuarioJpaRepositorio
-                .existsByDocumentoIdentidad(documentoIdentidad);
-    }
+		return usuarioJpaRepositorio
+			.existsByDocumentoIdentidad(documentoIdentidad);
+	}
 
-    @Override
-    @Transactional
-    public Usuario guardar(Usuario usuario) {
-        UsuarioEntidad entidad =
-                usuarioPersistenciaMapeador.aEntidad(usuario);
+	@Override
+	@Transactional
+	public Usuario guardar(Usuario usuario) {
+		UsuarioEntidad entidad =
+			usuarioPersistenciaMapeador.aEntidad(usuario);
 
-        UsuarioEntidad entidadGuardada =
-                usuarioJpaRepositorio.save(entidad);
+		UsuarioEntidad entidadGuardada =
+			usuarioJpaRepositorio.save(entidad);
 
-        return usuarioPersistenciaMapeador.aModelo(entidadGuardada);
-    }
+		return usuarioPersistenciaMapeador.aModelo(entidadGuardada);
+	}
+
+		@Override
+		@Transactional(readOnly = true)
+		public Optional<Usuario> buscarPorCorreo(String correo) {
+		return usuarioJpaRepositorio
+			.findByCorreoIgnoreCase(correo)
+			.map(usuarioPersistenciaMapeador::aModelo);
+		}
 }
