@@ -1,53 +1,94 @@
 package co.edu.clase.microservicio_usuarios.infraestructura.configuracion;
 
+import co.edu.clase.microservicio_usuarios.infraestructura.entrada.seguridad.FiltroAutenticacionJwt;
+import co.edu.clase.microservicio_usuarios.infraestructura.entrada.seguridad.ManejadorAccesoDenegado;
+import co.edu.clase.microservicio_usuarios.infraestructura.entrada.seguridad.PuntoEntradaNoAutorizado;
+import co.edu.clase.microservicio_usuarios.util.constantes.ConstantesApi;
+import co.edu.clase.microservicio_usuarios.util.enumeraciones.PerfilUsuario;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-
-import co.edu.clase.microservicio_usuarios.util.constantes.ConstantesApi;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @Profile("desarrollo")
 public class SeguridadDesarrolloConfiguracion {
 
-	@Bean
-	public SecurityFilterChain filtroSeguridadDesarrollo(
-			HttpSecurity seguridadHttp) throws Exception {
+    private final FiltroAutenticacionJwt filtroAutenticacionJwt;
+    private final PuntoEntradaNoAutorizado
+            puntoEntradaNoAutorizado;
+    private final ManejadorAccesoDenegado
+            manejadorAccesoDenegado;
 
-		seguridadHttp
-			// .authorizeHttpRequests(autorizacion -> autorizacion
-			// .requestMatchers("/h2-console/**").permitAll()
-			// .anyRequest().authenticated()
-			// )
-			.authorizeHttpRequests(autorizacion -> autorizacion
-				.requestMatchers(
-					"/h2-console/**",
-					"/swagger-ui.html",
-					"/swagger-ui/**",
-					"/v3/api-docs/**"
-				)
-				.permitAll()
-				.requestMatchers(
-						ConstantesApi.API_USUARIOS
-								+ ConstantesApi.PROPIETARIOS)
-				.permitAll()
-				.anyRequest().authenticated()
-			)
-			.csrf(csrf -> csrf
-				.ignoringRequestMatchers(
-					"/h2-console/**",
-					ConstantesApi.API_USUARIOS
-							+ ConstantesApi.PROPIETARIOS
-				)
-			)
-			.headers(encabezados -> encabezados
-				.frameOptions(frameOptions -> frameOptions.sameOrigin())
-			)
-			.httpBasic(Customizer.withDefaults());
+    public SeguridadDesarrolloConfiguracion(
+            FiltroAutenticacionJwt filtroAutenticacionJwt,
+            PuntoEntradaNoAutorizado puntoEntradaNoAutorizado,
+            ManejadorAccesoDenegado manejadorAccesoDenegado) {
 
-		return seguridadHttp.build();
-	}
+        this.filtroAutenticacionJwt =
+                filtroAutenticacionJwt;
+        this.puntoEntradaNoAutorizado =
+                puntoEntradaNoAutorizado;
+        this.manejadorAccesoDenegado =
+                manejadorAccesoDenegado;
+    }
+
+    @Bean
+    public SecurityFilterChain filtroSeguridadDesarrollo(
+            HttpSecurity seguridadHttp) throws Exception {
+
+        seguridadHttp
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers(
+                                "/h2-console/**",
+                                ConstantesApi.AUTENTICACION,
+                                ConstantesApi.API_USUARIOS
+                                        + ConstantesApi.PROPIETARIOS
+                        )
+                )
+                .headers(encabezados -> encabezados
+                        .frameOptions(frameOptions ->
+                                frameOptions.sameOrigin()
+                        )
+                )
+                .sessionManagement(sesion -> sesion
+                        .sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS
+                        )
+                )
+                .exceptionHandling(excepciones -> excepciones
+                        .authenticationEntryPoint(
+                                puntoEntradaNoAutorizado
+                        )
+                        .accessDeniedHandler(
+                                manejadorAccesoDenegado
+                        )
+                )
+                .authorizeHttpRequests(autorizacion -> autorizacion
+                        .requestMatchers(
+                                "/h2-console/**",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                ConstantesApi.AUTENTICACION
+                        ).permitAll()
+                        .requestMatchers(
+                                ConstantesApi.API_USUARIOS
+                                        + ConstantesApi.PROPIETARIOS
+                        ).hasRole(
+                                PerfilUsuario.ADMINISTRADOR.name()
+                        )
+                        .anyRequest()
+                        .authenticated()
+                )
+                .addFilterBefore(
+                        filtroAutenticacionJwt,
+                        UsernamePasswordAuthenticationFilter.class
+                );
+
+        return seguridadHttp.build();
+    }
 }

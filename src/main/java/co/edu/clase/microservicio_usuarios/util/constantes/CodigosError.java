@@ -13,6 +13,12 @@ public final class CodigosError {
     public static final String CLAVE_OBLIGATORIA = "USR-006";
     public static final String SOLICITUD_INVALIDA = "VAL-001";
     public static final String CUERPO_SOLICITUD_INVALIDO = "VAL-002";
+    public static final String CREDENCIALES_INVALIDAS = "AUT-001";
+    public static final String USUARIO_INACTIVO = "AUT-002";
+    public static final String TOKEN_INVALIDO = "AUT-003";
+    public static final String TOKEN_EXPIRADO = "AUT-004";
+    public static final String TOKEN_AUSENTE = "AUT-005";
+    public static final String ACCESO_DENEGADO = "AUT-006";
 
     private CodigosError() {
         throw new IllegalStateException(

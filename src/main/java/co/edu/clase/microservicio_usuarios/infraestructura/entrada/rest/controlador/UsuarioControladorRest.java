@@ -7,6 +7,7 @@ import co.edu.clase.microservicio_usuarios.util.constantes.ConstantesApi;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -18,8 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @Tag(
-        name = "Usuarios",
-        description = "Operaciones para la gestión de usuarios"
+	name = "Usuarios",
+	description = "Operaciones para la gestión de usuarios"
 )
 
 @RestController
@@ -35,29 +36,39 @@ public class UsuarioControladorRest {
     }
 
     @Operation(
-            summary = "Crear propietario",
-            description =
-                    "Crea una cuenta con perfil PROPIETARIO. "
-                            + "El correo y el documento deben ser únicos, "
-                            + "y la persona debe ser mayor de edad."
+		summary = "Crear propietario",
+		description =
+				"Crea una cuenta con perfil PROPIETARIO. "
+				+ "El correo y el documento deben ser únicos, "
+				+ "y la persona debe ser mayor de edad."
     )
+
+	@SecurityRequirement(name = "autenticacionBearer")
     @ApiResponses({
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "Propietario creado correctamente"
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Solicitud inválida o propietario menor de edad"
-            ),
-            @ApiResponse(
-                    responseCode = "409",
-                    description = "Correo o documento ya registrado"
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Error interno del microservicio"
-            )
+		@ApiResponse(
+			responseCode = "201",
+			description = "Propietario creado correctamente"
+		),
+		@ApiResponse(
+			responseCode = "400",
+			description = "Solicitud inválida o propietario menor de edad"
+		),
+		@ApiResponse(
+				responseCode = "401",
+				description = "Token ausente o inválido"
+		),
+		@ApiResponse(
+				responseCode = "403",
+				description = "El usuario no tiene perfil administrador"
+		),
+		@ApiResponse(
+			responseCode = "409",
+			description = "Correo o documento ya registrado"
+		),
+		@ApiResponse(
+			responseCode = "500",
+			description = "Error interno del microservicio"
+		)
     })
 
     @PostMapping(ConstantesApi.PROPIETARIOS)
@@ -66,10 +77,10 @@ public class UsuarioControladorRest {
             CrearPropietarioSolicitudDto solicitud) {
 
         UsuarioRespuestaDto respuesta =
-                crearPropietarioHandler.ejecutar(solicitud);
+			crearPropietarioHandler.ejecutar(solicitud);
 
         return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(respuesta);
+			.status(HttpStatus.CREATED)
+			.body(respuesta);
     }
 }
