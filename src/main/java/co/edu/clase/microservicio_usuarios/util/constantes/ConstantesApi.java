@@ -5,6 +5,7 @@ public final class ConstantesApi {
     public static final String API_USUARIOS = "/api/v1/usuarios";
     public static final String PROPIETARIOS = "/propietarios";
     public static final String AUTENTICACION = "/api/v1/autenticacion";
+    public static final String VALIDACION_USUARIO = "/{usuarioId}/validacion";
 
     private ConstantesApi() {
         throw new IllegalStateException(

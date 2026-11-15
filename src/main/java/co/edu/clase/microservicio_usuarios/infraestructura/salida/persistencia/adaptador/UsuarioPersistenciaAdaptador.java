@@ -54,11 +54,19 @@ public class UsuarioPersistenciaAdaptador
 		return usuarioPersistenciaMapeador.aModelo(entidadGuardada);
 	}
 
-		@Override
-		@Transactional(readOnly = true)
-		public Optional<Usuario> buscarPorCorreo(String correo) {
+	@Override
+	@Transactional(readOnly = true)
+	public Optional<Usuario> buscarPorCorreo(String correo) {
+	return usuarioJpaRepositorio
+		.findByCorreoIgnoreCase(correo)
+		.map(usuarioPersistenciaMapeador::aModelo);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Optional<Usuario> buscarPorId(Long usuarioId) {
 		return usuarioJpaRepositorio
-			.findByCorreoIgnoreCase(correo)
-			.map(usuarioPersistenciaMapeador::aModelo);
-		}
+				.findById(usuarioId)
+				.map(usuarioPersistenciaMapeador::aModelo);
+	}
 }

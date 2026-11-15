@@ -35,9 +35,7 @@ public class OpenApiConfiguracion {
 				.addSecuritySchemes(
 					ESQUEMA_SEGURIDAD,
 					new SecurityScheme()
-						.name(ConstantesSeguridad
-							.ENCABEZADO_AUTORIZACION
-						)
+						.name(ConstantesSeguridad.ENCABEZADO_AUTORIZACION)
 						.type(SecurityScheme.Type.HTTP)
 						.scheme("bearer")
 						.bearerFormat("JWT")

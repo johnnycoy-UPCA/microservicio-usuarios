@@ -18,22 +18,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SeguridadDesarrolloConfiguracion {
 
     private final FiltroAutenticacionJwt filtroAutenticacionJwt;
-    private final PuntoEntradaNoAutorizado
-            puntoEntradaNoAutorizado;
-    private final ManejadorAccesoDenegado
-            manejadorAccesoDenegado;
+    private final PuntoEntradaNoAutorizado puntoEntradaNoAutorizado;
+    private final ManejadorAccesoDenegado manejadorAccesoDenegado;
 
     public SeguridadDesarrolloConfiguracion(
             FiltroAutenticacionJwt filtroAutenticacionJwt,
             PuntoEntradaNoAutorizado puntoEntradaNoAutorizado,
             ManejadorAccesoDenegado manejadorAccesoDenegado) {
 
-        this.filtroAutenticacionJwt =
-                filtroAutenticacionJwt;
-        this.puntoEntradaNoAutorizado =
-                puntoEntradaNoAutorizado;
-        this.manejadorAccesoDenegado =
-                manejadorAccesoDenegado;
+        this.filtroAutenticacionJwt = filtroAutenticacionJwt;
+        this.puntoEntradaNoAutorizado = puntoEntradaNoAutorizado;
+        this.manejadorAccesoDenegado = manejadorAccesoDenegado;
     }
 
     @Bean
@@ -42,51 +37,55 @@ public class SeguridadDesarrolloConfiguracion {
 
         seguridadHttp
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers(
-                                "/h2-console/**",
-                                ConstantesApi.AUTENTICACION,
-                                ConstantesApi.API_USUARIOS
-                                        + ConstantesApi.PROPIETARIOS
-                        )
+					.ignoringRequestMatchers(
+						"/h2-console/**",
+						ConstantesApi.AUTENTICACION,
+						ConstantesApi.API_USUARIOS
+						+ ConstantesApi.PROPIETARIOS
+					)
                 )
                 .headers(encabezados -> encabezados
-                        .frameOptions(frameOptions ->
-                                frameOptions.sameOrigin()
-                        )
+					.frameOptions(frameOptions ->
+						frameOptions.sameOrigin()
+					)
                 )
                 .sessionManagement(sesion -> sesion
-                        .sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS
-                        )
+					.sessionCreationPolicy(
+						SessionCreationPolicy.STATELESS
+					)
                 )
                 .exceptionHandling(excepciones -> excepciones
-                        .authenticationEntryPoint(
-                                puntoEntradaNoAutorizado
-                        )
-                        .accessDeniedHandler(
-                                manejadorAccesoDenegado
-                        )
+					.authenticationEntryPoint(
+						puntoEntradaNoAutorizado
+					)
+					.accessDeniedHandler(
+						manejadorAccesoDenegado
+					)
                 )
                 .authorizeHttpRequests(autorizacion -> autorizacion
-                        .requestMatchers(
-                                "/h2-console/**",
-                                "/swagger-ui.html",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                ConstantesApi.AUTENTICACION
-                        ).permitAll()
-                        .requestMatchers(
-                                ConstantesApi.API_USUARIOS
-                                        + ConstantesApi.PROPIETARIOS
-                        ).hasRole(
-                                PerfilUsuario.ADMINISTRADOR.name()
-                        )
-                        .anyRequest()
-                        .authenticated()
+					.requestMatchers(
+						"/h2-console/**",
+						"/swagger-ui.html",
+						"/swagger-ui/**",
+						"/v3/api-docs/**",
+						ConstantesApi.AUTENTICACION
+					).permitAll()
+					.requestMatchers(
+						ConstantesApi.API_USUARIOS
+						+ ConstantesApi.PROPIETARIOS
+					).hasRole(
+						PerfilUsuario.ADMINISTRADOR.name()
+					)
+					.requestMatchers(
+						"/api/v1/usuarios/*/validacion"
+					// ).permitAll()
+					).hasRole(PerfilUsuario.ADMINISTRADOR.name())
+					.anyRequest()
+					.authenticated()
                 )
                 .addFilterBefore(
-                        filtroAutenticacionJwt,
-                        UsernamePasswordAuthenticationFilter.class
+					filtroAutenticacionJwt,
+					UsernamePasswordAuthenticationFilter.class
                 );
 
         return seguridadHttp.build();

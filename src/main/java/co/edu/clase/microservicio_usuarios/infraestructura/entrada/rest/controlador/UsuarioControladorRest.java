@@ -1,7 +1,9 @@
 package co.edu.clase.microservicio_usuarios.infraestructura.entrada.rest.controlador;
 
+import co.edu.clase.microservicio_usuarios.aplicacion.dto.respuesta.UsuarioConsultaRespuestaDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.respuesta.UsuarioRespuestaDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.CrearPropietarioSolicitudDto;
+import co.edu.clase.microservicio_usuarios.aplicacion.handler.ConsultarUsuarioHandler;
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.CrearPropietarioHandler;
 import co.edu.clase.microservicio_usuarios.util.constantes.ConstantesApi;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +14,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,11 +32,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class UsuarioControladorRest {
 
     private final CrearPropietarioHandler crearPropietarioHandler;
+	private final ConsultarUsuarioHandler consultarUsuarioHandler;
 
     public UsuarioControladorRest(
-            CrearPropietarioHandler crearPropietarioHandler) {
+            CrearPropietarioHandler crearPropietarioHandler,
+            ConsultarUsuarioHandler consultarUsuarioHandler) {
 
         this.crearPropietarioHandler = crearPropietarioHandler;
+        this.consultarUsuarioHandler = consultarUsuarioHandler;
     }
 
     @Operation(
@@ -54,12 +61,12 @@ public class UsuarioControladorRest {
 			description = "Solicitud inválida o propietario menor de edad"
 		),
 		@ApiResponse(
-				responseCode = "401",
-				description = "Token ausente o inválido"
+			responseCode = "401",
+			description = "Token ausente o inválido"
 		),
 		@ApiResponse(
-				responseCode = "403",
-				description = "El usuario no tiene perfil administrador"
+			responseCode = "403",
+			description = "El usuario no tiene perfil administrador"
 		),
 		@ApiResponse(
 			responseCode = "409",
@@ -83,4 +90,14 @@ public class UsuarioControladorRest {
 			.status(HttpStatus.CREATED)
 			.body(respuesta);
     }
+
+	@GetMapping(ConstantesApi.VALIDACION_USUARIO)
+	public ResponseEntity<UsuarioConsultaRespuestaDto>
+			consultarUsuario(
+				@PathVariable Long usuarioId) {
+
+		return ResponseEntity.ok(
+			consultarUsuarioHandler.ejecutar(usuarioId)
+		);
+	}
 }

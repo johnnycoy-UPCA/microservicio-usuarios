@@ -26,44 +26,44 @@ public class AutenticacionControladorRest {
 
     public AutenticacionControladorRest(
             AutenticarUsuarioHandler
-                    autenticarUsuarioHandler) {
+				autenticarUsuarioHandler) {
 
         this.autenticarUsuarioHandler =
-                autenticarUsuarioHandler;
+			autenticarUsuarioHandler;
     }
 
     @Operation(
-            summary = "Autenticar usuario",
-            description =
-                    "Valida el correo y la clave del usuario "
-                            + "y genera un token JWT"
+		summary = "Autenticar usuario",
+		description =
+			"Valida el correo y la clave del usuario "
+			+ "y genera un token JWT"
     )
     @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Usuario autenticado correctamente"
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Solicitud inválida"
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Credenciales inválidas o usuario inactivo"
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Error interno del microservicio"
-            )
+		@ApiResponse(
+			responseCode = "200",
+			description = "Usuario autenticado correctamente"
+		),
+		@ApiResponse(
+			responseCode = "400",
+			description = "Solicitud inválida"
+		),
+		@ApiResponse(
+			responseCode = "401",
+			description = "Credenciales inválidas o usuario inactivo"
+		),
+		@ApiResponse(
+			responseCode = "500",
+			description = "Error interno del microservicio"
+		)
     })
     @PostMapping(ConstantesApi.AUTENTICACION)
     public ResponseEntity<AutenticacionRespuestaDto>
             autenticar(
-                    @Valid @RequestBody
-                    AutenticacionSolicitudDto solicitud) {
+				@Valid @RequestBody
+				AutenticacionSolicitudDto solicitud) {
 
         return ResponseEntity.ok(
-                autenticarUsuarioHandler.ejecutar(solicitud)
+			autenticarUsuarioHandler.ejecutar(solicitud)
         );
     }
 }
