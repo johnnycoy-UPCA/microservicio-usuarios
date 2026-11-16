@@ -1,8 +1,10 @@
 package co.edu.clase.microservicio_usuarios.infraestructura.configuracion;
 
 import co.edu.clase.microservicio_usuarios.dominio.api.AutenticarUsuarioServicioPuerto;
+import co.edu.clase.microservicio_usuarios.dominio.api.ConsultarUsuarioServicioPuerto;
 import co.edu.clase.microservicio_usuarios.dominio.api.CrearPropietarioServicioPuerto;
 import co.edu.clase.microservicio_usuarios.dominio.casouso.AutenticarUsuarioCasoUso;
+import co.edu.clase.microservicio_usuarios.dominio.casouso.ConsultarUsuarioCasoUso;
 import co.edu.clase.microservicio_usuarios.dominio.casouso.CrearPropietarioCasoUso;
 import co.edu.clase.microservicio_usuarios.dominio.spi.CifradorClavePuerto;
 import co.edu.clase.microservicio_usuarios.dominio.spi.RolPersistenciaPuerto;
@@ -53,6 +55,17 @@ public class BeansConfiguracion {
             usuarioPersistenciaPuerto,
             cifradorClavePuerto,
             tokenSeguridadPuerto
+        );
+    }
+
+    @Bean
+    public ConsultarUsuarioServicioPuerto
+            consultarUsuarioServicioPuerto(
+                    UsuarioPersistenciaPuerto
+                            usuarioPersistenciaPuerto) {
+
+        return new ConsultarUsuarioCasoUso(
+                usuarioPersistenciaPuerto
         );
     }
 }
