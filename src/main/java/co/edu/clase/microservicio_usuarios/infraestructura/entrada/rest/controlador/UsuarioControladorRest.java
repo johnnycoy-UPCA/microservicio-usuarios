@@ -91,13 +91,44 @@ public class UsuarioControladorRest {
 			.body(respuesta);
     }
 
+	@Operation(
+		summary = "Consultar usuario para validación interna",
+		description =
+			"Consulta el perfil y estado de un usuario. "
+			+ "La operación está destinada a la comunicación "
+			+ "entre microservicios y requiere perfil ADMINISTRADOR."
+	)
+	@SecurityRequirement(name = "autenticacionBearer")
+	@ApiResponses({
+		@ApiResponse(
+			responseCode = "200",
+			description = "Usuario consultado correctamente"
+		),
+		@ApiResponse(
+			responseCode = "401",
+			description = "Token ausente, inválido o expirado"
+		),
+		@ApiResponse(
+			responseCode = "403",
+			description = "El usuario autenticado no tiene perfil ADMINISTRADOR"
+		),
+		@ApiResponse(
+			responseCode = "404",
+			description = "Usuario no encontrado"
+		),
+		@ApiResponse(
+			responseCode = "500",
+			description = "Error interno del microservicio"
+		)
+	})
+	
 	@GetMapping(ConstantesApi.VALIDACION_USUARIO)
 	public ResponseEntity<UsuarioConsultaRespuestaDto>
 			consultarUsuario(
-				@PathVariable Long usuarioId) {
+					@PathVariable Long usuarioId) {
 
 		return ResponseEntity.ok(
-			consultarUsuarioHandler.ejecutar(usuarioId)
+				consultarUsuarioHandler.ejecutar(usuarioId)
 		);
 	}
 }
