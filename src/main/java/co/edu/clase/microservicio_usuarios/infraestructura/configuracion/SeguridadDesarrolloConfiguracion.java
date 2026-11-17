@@ -41,7 +41,9 @@ public class SeguridadDesarrolloConfiguracion {
 						"/h2-console/**",
 						ConstantesApi.AUTENTICACION,
 						ConstantesApi.API_USUARIOS
-						+ ConstantesApi.PROPIETARIOS
+						+ ConstantesApi.PROPIETARIOS,
+						ConstantesApi.API_USUARIOS
+						+ ConstantesApi.CLIENTES
 					)
                 )
                 .headers(encabezados -> encabezados
@@ -68,18 +70,23 @@ public class SeguridadDesarrolloConfiguracion {
 						"/swagger-ui.html",
 						"/swagger-ui/**",
 						"/v3/api-docs/**",
-						ConstantesApi.AUTENTICACION
-					).permitAll()
+						ConstantesApi.AUTENTICACION,
+						ConstantesApi.API_USUARIOS
+						+ ConstantesApi.CLIENTES
+					)
+					.permitAll()
 					.requestMatchers(
 						ConstantesApi.API_USUARIOS
 						+ ConstantesApi.PROPIETARIOS
-					).hasRole(
+					)
+					.hasRole(
 						PerfilUsuario.ADMINISTRADOR.name()
 					)
 					.requestMatchers(
 						"/api/v1/usuarios/*/validacion"
 					// ).permitAll()
-					).hasRole(PerfilUsuario.ADMINISTRADOR.name())
+					)
+					.hasRole(PerfilUsuario.ADMINISTRADOR.name())
 					.anyRequest()
 					.authenticated()
                 )

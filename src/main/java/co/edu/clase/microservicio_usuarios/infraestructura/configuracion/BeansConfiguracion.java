@@ -3,9 +3,11 @@ package co.edu.clase.microservicio_usuarios.infraestructura.configuracion;
 import co.edu.clase.microservicio_usuarios.dominio.api.AutenticarUsuarioServicioPuerto;
 import co.edu.clase.microservicio_usuarios.dominio.api.ConsultarUsuarioServicioPuerto;
 import co.edu.clase.microservicio_usuarios.dominio.api.CrearPropietarioServicioPuerto;
+import co.edu.clase.microservicio_usuarios.dominio.api.RegistrarClienteServicioPuerto;
 import co.edu.clase.microservicio_usuarios.dominio.casouso.AutenticarUsuarioCasoUso;
 import co.edu.clase.microservicio_usuarios.dominio.casouso.ConsultarUsuarioCasoUso;
 import co.edu.clase.microservicio_usuarios.dominio.casouso.CrearPropietarioCasoUso;
+import co.edu.clase.microservicio_usuarios.dominio.casouso.RegistrarClienteCasoUso;
 import co.edu.clase.microservicio_usuarios.dominio.spi.CifradorClavePuerto;
 import co.edu.clase.microservicio_usuarios.dominio.spi.RolPersistenciaPuerto;
 import co.edu.clase.microservicio_usuarios.dominio.spi.TokenSeguridadPuerto;
@@ -62,10 +64,29 @@ public class BeansConfiguracion {
     public ConsultarUsuarioServicioPuerto
             consultarUsuarioServicioPuerto(
                     UsuarioPersistenciaPuerto
-                            usuarioPersistenciaPuerto) {
+                        usuarioPersistenciaPuerto) {
 
         return new ConsultarUsuarioCasoUso(
-                usuarioPersistenciaPuerto
+            usuarioPersistenciaPuerto
+        );
+    }
+
+    @Bean
+    public RegistrarClienteServicioPuerto
+            registrarClienteServicioPuerto(
+                    UsuarioPersistenciaPuerto
+                        usuarioPersistenciaPuerto,
+                    RolPersistenciaPuerto
+                        rolPersistenciaPuerto,
+                    CifradorClavePuerto
+                        cifradorClavePuerto,
+                    Clock relojAplicacion) {
+
+        return new RegistrarClienteCasoUso(
+            usuarioPersistenciaPuerto,
+            rolPersistenciaPuerto,
+            cifradorClavePuerto,
+            relojAplicacion
         );
     }
 }
