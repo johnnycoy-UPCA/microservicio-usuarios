@@ -2,8 +2,10 @@ package co.edu.clase.microservicio_usuarios.infraestructura.entrada.rest.control
 
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.respuesta.UsuarioRespuestaDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.CrearPropietarioSolicitudDto;
+import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.RegistrarClienteSolicitudDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.ConsultarUsuarioHandler;
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.CrearPropietarioHandler;
+import co.edu.clase.microservicio_usuarios.aplicacion.handler.RegistrarClienteHandler;
 import co.edu.clase.microservicio_usuarios.infraestructura.entrada.rest.manejador.ManejadorGlobalExcepciones;
 import co.edu.clase.microservicio_usuarios.util.constantes.ConstantesApi;
 import co.edu.clase.microservicio_usuarios.util.enumeraciones.PerfilUsuario;
@@ -37,6 +39,8 @@ class UsuarioControladorRestTest {
     private CrearPropietarioHandler crearPropietarioHandler;
 	@Mock
 	private ConsultarUsuarioHandler consultarUsuarioHandler;
+    @Mock
+    private RegistrarClienteHandler registrarClienteHandler;
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
@@ -46,7 +50,8 @@ class UsuarioControladorRestTest {
         UsuarioControladorRest controlador =
 			new UsuarioControladorRest(
 				crearPropietarioHandler,
-				consultarUsuarioHandler);
+				consultarUsuarioHandler,
+				registrarClienteHandler);
 
         // Validator validador = Validation
         //         .buildDefaultValidatorFactory()
@@ -145,6 +150,44 @@ class UsuarioControladorRestTest {
 			.andExpect(jsonPath("$.codigo").value("VAL-002"));
     }
 
+    @Test
+    void debeRegistrarClienteYResponderCreado()
+            throws Exception {
+
+        RegistrarClienteSolicitudDto solicitud =
+                crearSolicitudClienteValida();
+
+        UsuarioRespuestaDto respuesta =
+                crearRespuestaCliente();
+
+        when(registrarClienteHandler.ejecutar(
+                any(RegistrarClienteSolicitudDto.class)
+        )).thenReturn(respuesta);
+
+        mockMvc.perform(post(
+                        ConstantesApi.API_USUARIOS
+                        + ConstantesApi.CLIENTES
+                )
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(
+                                solicitud
+                        )))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(20))
+                .andExpect(jsonPath("$.nombre")
+                        .value("Cliente"))
+                .andExpect(jsonPath("$.perfil")
+                        .value("CLIENTE"))
+                .andExpect(jsonPath("$.activo")
+                        .value(true))
+                .andExpect(jsonPath("$.clave")
+                        .doesNotExist());
+
+        verify(registrarClienteHandler).ejecutar(
+                any(RegistrarClienteSolicitudDto.class)
+        );
+    }
+
     private CrearPropietarioSolicitudDto crearSolicitudValida() {
         CrearPropietarioSolicitudDto solicitud =
 			new CrearPropietarioSolicitudDto();
@@ -179,6 +222,49 @@ class UsuarioControladorRestTest {
         respuesta.setActivo(Boolean.TRUE);
         respuesta.setFechaCreacion(
 			LocalDateTime.of(2026, 11, 8, 11, 21)
+        );
+
+        return respuesta;
+    }
+
+    private RegistrarClienteSolicitudDto
+            crearSolicitudClienteValida() {
+
+        RegistrarClienteSolicitudDto solicitud =
+                new RegistrarClienteSolicitudDto();
+
+        solicitud.setNombre("Cliente");
+        solicitud.setApellido("Prueba");
+        solicitud.setDocumentoIdentidad("123456789");
+        solicitud.setCelular("+573001234567");
+        solicitud.setFechaNacimiento(
+                LocalDate.of(2008, 5, 20)
+        );
+        solicitud.setCorreo("cliente@correo.com");
+        solicitud.setClave("ClaveCliente123");
+
+        return solicitud;
+    }
+
+    private UsuarioRespuestaDto crearRespuestaCliente() {
+        UsuarioRespuestaDto respuesta =
+                new UsuarioRespuestaDto();
+
+        respuesta.setId(20L);
+        respuesta.setNombre("Cliente");
+        respuesta.setApellido("Prueba");
+        respuesta.setDocumentoIdentidad("123456789");
+        respuesta.setCelular("+573001234567");
+        respuesta.setFechaNacimiento(
+                LocalDate.of(2008, 5, 20)
+        );
+        respuesta.setCorreo("cliente@correo.com");
+        respuesta.setPerfil(PerfilUsuario.CLIENTE);
+        respuesta.setActivo(Boolean.TRUE);
+        respuesta.setFechaCreacion(
+                LocalDateTime.of(
+                        2026, 11, 17, 10, 0
+                )
         );
 
         return respuesta;

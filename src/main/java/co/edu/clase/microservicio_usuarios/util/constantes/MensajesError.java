@@ -97,6 +97,9 @@ public final class MensajesError {
 	
 	public static final String ACCESO_DENEGADO =
         "El usuario autenticado no tiene permisos para realizar esta operación";
+
+	public static final String ROL_CLIENTE_NO_CONFIGURADO =
+			"El rol cliente no se encuentra configurado";
 			
 	private MensajesError() {
 		throw new IllegalStateException(

@@ -3,8 +3,10 @@ package co.edu.clase.microservicio_usuarios.infraestructura.entrada.rest.control
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.respuesta.UsuarioConsultaRespuestaDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.respuesta.UsuarioRespuestaDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.CrearPropietarioSolicitudDto;
+import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.RegistrarClienteSolicitudDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.ConsultarUsuarioHandler;
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.CrearPropietarioHandler;
+import co.edu.clase.microservicio_usuarios.aplicacion.handler.RegistrarClienteHandler;
 import co.edu.clase.microservicio_usuarios.util.constantes.ConstantesApi;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,13 +35,16 @@ public class UsuarioControladorRest {
 
     private final CrearPropietarioHandler crearPropietarioHandler;
 	private final ConsultarUsuarioHandler consultarUsuarioHandler;
+	private final RegistrarClienteHandler registrarClienteHandler;
 
     public UsuarioControladorRest(
             CrearPropietarioHandler crearPropietarioHandler,
-            ConsultarUsuarioHandler consultarUsuarioHandler) {
+            ConsultarUsuarioHandler consultarUsuarioHandler,
+            RegistrarClienteHandler registrarClienteHandler) {
 
         this.crearPropietarioHandler = crearPropietarioHandler;
         this.consultarUsuarioHandler = consultarUsuarioHandler;
+        this.registrarClienteHandler = registrarClienteHandler;
     }
 
     @Operation(
@@ -77,7 +82,6 @@ public class UsuarioControladorRest {
 			description = "Error interno del microservicio"
 		)
     })
-
     @PostMapping(ConstantesApi.PROPIETARIOS)
     public ResponseEntity<UsuarioRespuestaDto> crearPropietario(
             @Valid @RequestBody
@@ -120,8 +124,7 @@ public class UsuarioControladorRest {
 			responseCode = "500",
 			description = "Error interno del microservicio"
 		)
-	})
-	
+	})	
 	@GetMapping(ConstantesApi.VALIDACION_USUARIO)
 	public ResponseEntity<UsuarioConsultaRespuestaDto>
 			consultarUsuario(
@@ -130,5 +133,42 @@ public class UsuarioControladorRest {
 		return ResponseEntity.ok(
 				consultarUsuarioHandler.ejecutar(usuarioId)
 		);
+	}
+
+	@Operation(
+		summary = "Registrar cliente",
+		description =
+				"Registra públicamente un usuario con perfil CLIENTE"
+	)
+	@ApiResponses({
+		@ApiResponse(
+			responseCode = "201",
+			description = "Cliente registrado correctamente"
+		),
+		@ApiResponse(
+			responseCode = "400",
+			description = "Solicitud inválida"
+		),
+		@ApiResponse(
+			responseCode = "409",
+			description = "Correo o documento ya registrado"
+		),
+		@ApiResponse(
+			responseCode = "500",
+			description = "Error interno del microservicio"
+		)
+	})
+	@PostMapping(ConstantesApi.CLIENTES)
+	public ResponseEntity<UsuarioRespuestaDto>
+			registrarCliente(
+					@Valid @RequestBody
+					RegistrarClienteSolicitudDto solicitud) {
+
+		UsuarioRespuestaDto respuesta =
+				registrarClienteHandler.ejecutar(solicitud);
+
+		return ResponseEntity
+				.status(HttpStatus.CREATED)
+				.body(respuesta);
 	}
 }

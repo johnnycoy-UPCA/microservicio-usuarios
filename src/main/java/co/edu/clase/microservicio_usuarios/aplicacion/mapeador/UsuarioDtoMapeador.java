@@ -2,6 +2,7 @@ package co.edu.clase.microservicio_usuarios.aplicacion.mapeador;
 
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.respuesta.UsuarioRespuestaDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.CrearPropietarioSolicitudDto;
+import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.RegistrarClienteSolicitudDto;
 import co.edu.clase.microservicio_usuarios.dominio.modelo.Usuario;
 import org.springframework.stereotype.Component;
 
@@ -15,9 +16,7 @@ public class UsuarioDtoMapeador {
 
         usuario.setNombre(solicitud.getNombre());
         usuario.setApellido(solicitud.getApellido());
-        usuario.setDocumentoIdentidad(
-                solicitud.getDocumentoIdentidad()
-        );
+        usuario.setDocumentoIdentidad(solicitud.getDocumentoIdentidad());
         usuario.setCelular(solicitud.getCelular());
         usuario.setFechaNacimiento(solicitud.getFechaNacimiento());
         usuario.setCorreo(solicitud.getCorreo());
@@ -26,6 +25,22 @@ public class UsuarioDtoMapeador {
         return usuario;
     }
 
+	public Usuario aModelo(
+			RegistrarClienteSolicitudDto solicitud) {
+
+		Usuario usuario = new Usuario();
+
+		usuario.setNombre(solicitud.getNombre());
+		usuario.setApellido(solicitud.getApellido());
+		usuario.setDocumentoIdentidad(solicitud.getDocumentoIdentidad());
+		usuario.setCelular(solicitud.getCelular());
+		usuario.setFechaNacimiento(solicitud.getFechaNacimiento());
+		usuario.setCorreo(solicitud.getCorreo());
+		usuario.setClave(solicitud.getClave());
+
+		return usuario;
+	}
+
     public UsuarioRespuestaDto aRespuesta(Usuario usuario) {
         UsuarioRespuestaDto respuesta =
                 new UsuarioRespuestaDto();
@@ -33,9 +48,7 @@ public class UsuarioDtoMapeador {
         respuesta.setId(usuario.getId());
         respuesta.setNombre(usuario.getNombre());
         respuesta.setApellido(usuario.getApellido());
-        respuesta.setDocumentoIdentidad(
-                usuario.getDocumentoIdentidad()
-        );
+        respuesta.setDocumentoIdentidad(usuario.getDocumentoIdentidad());
         respuesta.setCelular(usuario.getCelular());
         respuesta.setFechaNacimiento(usuario.getFechaNacimiento());
         respuesta.setCorreo(usuario.getCorreo());
