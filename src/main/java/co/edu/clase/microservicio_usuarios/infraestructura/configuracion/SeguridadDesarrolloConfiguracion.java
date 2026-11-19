@@ -43,7 +43,9 @@ public class SeguridadDesarrolloConfiguracion {
 						ConstantesApi.API_USUARIOS
 						+ ConstantesApi.PROPIETARIOS,
 						ConstantesApi.API_USUARIOS
-						+ ConstantesApi.CLIENTES
+						+ ConstantesApi.CLIENTES,
+						ConstantesApi.API_USUARIOS
+        				+ ConstantesApi.EMPLEADOS
 					)
                 )
                 .headers(encabezados -> encabezados
@@ -87,6 +89,13 @@ public class SeguridadDesarrolloConfiguracion {
 					// ).permitAll()
 					)
 					.hasRole(PerfilUsuario.ADMINISTRADOR.name())
+					.requestMatchers(
+						ConstantesApi.API_USUARIOS
+						+ ConstantesApi.EMPLEADOS
+					)
+					.hasRole(
+						PerfilUsuario.PROPIETARIO.name()
+					)
 					.anyRequest()
 					.authenticated()
                 )

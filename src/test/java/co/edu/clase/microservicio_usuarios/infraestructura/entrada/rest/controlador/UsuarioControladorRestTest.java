@@ -1,31 +1,42 @@
 package co.edu.clase.microservicio_usuarios.infraestructura.entrada.rest.controlador;
 
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.respuesta.UsuarioRespuestaDto;
+import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.CrearEmpleadoSolicitudDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.CrearPropietarioSolicitudDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.RegistrarClienteSolicitudDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.ConsultarUsuarioHandler;
+import co.edu.clase.microservicio_usuarios.aplicacion.handler.CrearEmpleadoHandler;
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.CrearPropietarioHandler;
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.RegistrarClienteHandler;
 import co.edu.clase.microservicio_usuarios.infraestructura.entrada.rest.manejador.ManejadorGlobalExcepciones;
+import co.edu.clase.microservicio_usuarios.infraestructura.entrada.seguridad.UsuarioAutenticado;
 import co.edu.clase.microservicio_usuarios.util.constantes.ConstantesApi;
 import co.edu.clase.microservicio_usuarios.util.enumeraciones.PerfilUsuario;
 import com.fasterxml.jackson.databind.ObjectMapper;
 // import jakarta.validation.Validation;
 // import jakarta.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -35,12 +46,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 class UsuarioControladorRestTest {
 
-    @Mock
-    private CrearPropietarioHandler crearPropietarioHandler;
+	@Mock
+	private CrearPropietarioHandler crearPropietarioHandler;
 	@Mock
 	private ConsultarUsuarioHandler consultarUsuarioHandler;
-    @Mock
-    private RegistrarClienteHandler registrarClienteHandler;
+	@Mock
+	private RegistrarClienteHandler registrarClienteHandler;
+	@Mock
+	private CrearEmpleadoHandler crearEmpleadoHandler;
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
@@ -51,7 +64,9 @@ class UsuarioControladorRestTest {
 			new UsuarioControladorRest(
 				crearPropietarioHandler,
 				consultarUsuarioHandler,
-				registrarClienteHandler);
+				registrarClienteHandler,
+				crearEmpleadoHandler
+			);
 
         // Validator validador = Validation
         //         .buildDefaultValidatorFactory()
@@ -68,11 +83,19 @@ class UsuarioControladorRestTest {
 				new ManejadorGlobalExcepciones()
 			)
 			.setValidator(validador)
+			.setCustomArgumentResolvers(
+					new AuthenticationPrincipalArgumentResolver()
+			)
 			.build();
 
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
     }
+
+	@AfterEach
+	void limpiarContextoSeguridad() {
+		SecurityContextHolder.clearContext();
+	}
 
     @Test
     void debeCrearPropietarioYResponderCreado() throws Exception {
@@ -188,6 +211,47 @@ class UsuarioControladorRestTest {
         );
     }
 
+	@Test
+	void debeCrearEmpleadoYResponderCreado()
+			throws Exception {
+
+		CrearEmpleadoSolicitudDto solicitud =
+				crearSolicitudEmpleadoValida();
+
+		UsuarioRespuestaDto respuesta =
+				crearRespuestaEmpleado();
+
+		when(crearEmpleadoHandler.ejecutar(
+				any(CrearEmpleadoSolicitudDto.class),
+				eq("token-propietario")
+		)).thenReturn(respuesta);
+
+		mockMvc.perform(post(
+						ConstantesApi.API_USUARIOS
+								+ ConstantesApi.EMPLEADOS
+				)
+						.with(autenticacionPropietario())
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(
+								solicitud
+						)))
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.id").value(30))
+				.andExpect(jsonPath("$.perfil")
+						.value("EMPLEADO"))
+				.andExpect(jsonPath("$.restauranteId")
+						.value(1))
+				.andExpect(jsonPath("$.activo")
+						.value(true))
+				.andExpect(jsonPath("$.clave")
+						.doesNotExist());
+
+		verify(crearEmpleadoHandler).ejecutar(
+				any(CrearEmpleadoSolicitudDto.class),
+				eq("token-propietario")
+		);
+	}
+
     private CrearPropietarioSolicitudDto crearSolicitudValida() {
         CrearPropietarioSolicitudDto solicitud =
 			new CrearPropietarioSolicitudDto();
@@ -269,4 +333,78 @@ class UsuarioControladorRestTest {
 
         return respuesta;
     }
+
+	private CrearEmpleadoSolicitudDto
+			crearSolicitudEmpleadoValida() {
+
+		CrearEmpleadoSolicitudDto solicitud =
+				new CrearEmpleadoSolicitudDto();
+
+		solicitud.setNombre("Empleado");
+		solicitud.setApellido("Prueba");
+		solicitud.setDocumentoIdentidad("1099001122");
+		solicitud.setCelular("+573001234599");
+		solicitud.setFechaNacimiento(
+				LocalDate.of(1995, 4, 12)
+		);
+		solicitud.setCorreo("empleado@correo.com");
+		solicitud.setClave("ClaveEmpleado#123");
+		solicitud.setRestauranteId(1L);
+
+		return solicitud;
+	}
+
+	private RequestPostProcessor autenticacionPropietario() {
+		return solicitud -> {
+			UsuarioAutenticado principal =
+					new UsuarioAutenticado(
+							10L,
+							"propietario@correo.com",
+							PerfilUsuario.PROPIETARIO,
+							"token-propietario"
+					);
+
+			UsernamePasswordAuthenticationToken autenticacion =
+					new UsernamePasswordAuthenticationToken(
+							principal,
+							null,
+							List.of(
+									new SimpleGrantedAuthority(
+											"ROLE_PROPIETARIO"
+									)
+							)
+					);
+
+			SecurityContextHolder
+					.getContext()
+					.setAuthentication(autenticacion);
+
+			return solicitud;
+		};
+	}
+
+	private UsuarioRespuestaDto crearRespuestaEmpleado() {
+		UsuarioRespuestaDto respuesta =
+				new UsuarioRespuestaDto();
+
+		respuesta.setId(30L);
+		respuesta.setNombre("Empleado");
+		respuesta.setApellido("Prueba");
+		respuesta.setDocumentoIdentidad("1099001122");
+		respuesta.setCelular("+573001234599");
+		respuesta.setFechaNacimiento(
+				LocalDate.of(1995, 4, 12)
+		);
+		respuesta.setCorreo("empleado@correo.com");
+		respuesta.setPerfil(PerfilUsuario.EMPLEADO);
+		respuesta.setRestauranteId(1L);
+		respuesta.setActivo(Boolean.TRUE);
+		respuesta.setFechaCreacion(
+				LocalDateTime.of(
+						2026, 11, 18, 15, 0
+				)
+		);
+
+		return respuesta;
+	}
 }

@@ -100,6 +100,25 @@ public final class MensajesError {
 
 	public static final String ROL_CLIENTE_NO_CONFIGURADO =
 			"El rol cliente no se encuentra configurado";
+
+	public static final String RESTAURANTE_NO_VALIDO =
+			"El restaurante no existe, está inactivo "
+			+ "o no pertenece al propietario autenticado";
+
+	public static final String SERVICIO_PLAZOLETA_NO_DISPONIBLE =
+			"No fue posible validar el restaurante "
+			+ "en el Microservicio Plazoleta";
+
+	public static final String ROL_EMPLEADO_NO_CONFIGURADO =
+			"El rol empleado no se encuentra configurado";
+
+	public static final String CLAVE_FORMATO_INVALIDO =
+			"La clave debe tener entre 12 y 64 caracteres, "
+			+ "incluir mayúscula, minúscula, número "
+			+ "y carácter especial, sin espacios";
+
+	public static final String RESTAURANTE_OBLIGATORIO =
+			"El identificador del restaurante es obligatorio";
 			
 	private MensajesError() {
 		throw new IllegalStateException(

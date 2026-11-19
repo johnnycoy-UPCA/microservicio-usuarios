@@ -15,6 +15,7 @@ public class UsuarioRespuestaDto {
     private LocalDate fechaNacimiento;
     private String correo;
     private PerfilUsuario perfil;
+    private Long restauranteId;
     private Boolean activo;
     private LocalDateTime fechaCreacion;
 
@@ -83,6 +84,14 @@ public class UsuarioRespuestaDto {
 
     public void setPerfil(PerfilUsuario perfil) {
         this.perfil = perfil;
+    }
+
+    public Long getRestauranteId() {
+        return restauranteId;
+    }
+
+    public void setRestauranteId(Long restauranteId) {
+        this.restauranteId = restauranteId;
     }
 
     public Boolean getActivo() {
