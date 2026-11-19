@@ -2,13 +2,16 @@ package co.edu.clase.microservicio_usuarios.infraestructura.configuracion;
 
 import co.edu.clase.microservicio_usuarios.dominio.api.AutenticarUsuarioServicioPuerto;
 import co.edu.clase.microservicio_usuarios.dominio.api.ConsultarUsuarioServicioPuerto;
+import co.edu.clase.microservicio_usuarios.dominio.api.CrearEmpleadoServicioPuerto;
 import co.edu.clase.microservicio_usuarios.dominio.api.CrearPropietarioServicioPuerto;
 import co.edu.clase.microservicio_usuarios.dominio.api.RegistrarClienteServicioPuerto;
 import co.edu.clase.microservicio_usuarios.dominio.casouso.AutenticarUsuarioCasoUso;
 import co.edu.clase.microservicio_usuarios.dominio.casouso.ConsultarUsuarioCasoUso;
+import co.edu.clase.microservicio_usuarios.dominio.casouso.CrearEmpleadoCasoUso;
 import co.edu.clase.microservicio_usuarios.dominio.casouso.CrearPropietarioCasoUso;
 import co.edu.clase.microservicio_usuarios.dominio.casouso.RegistrarClienteCasoUso;
 import co.edu.clase.microservicio_usuarios.dominio.spi.CifradorClavePuerto;
+import co.edu.clase.microservicio_usuarios.dominio.spi.RestauranteConsultaPuerto;
 import co.edu.clase.microservicio_usuarios.dominio.spi.RolPersistenciaPuerto;
 import co.edu.clase.microservicio_usuarios.dominio.spi.TokenSeguridadPuerto;
 import co.edu.clase.microservicio_usuarios.dominio.spi.UsuarioPersistenciaPuerto;
@@ -16,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.client.RestClient;
 
 import java.time.Clock;
 
@@ -86,6 +90,37 @@ public class BeansConfiguracion {
             usuarioPersistenciaPuerto,
             rolPersistenciaPuerto,
             cifradorClavePuerto,
+            relojAplicacion
+        );
+    }
+
+    @Bean
+    public RestClient clientePlazoleta(
+            PlazoletaServicioPropiedades propiedades) {
+
+        return RestClient.builder()
+            .baseUrl(propiedades.getUrlBase())
+            .build();
+    }
+
+    @Bean
+    public CrearEmpleadoServicioPuerto
+            crearEmpleadoServicioPuerto(
+                    UsuarioPersistenciaPuerto
+                        usuarioPersistenciaPuerto,
+                    RolPersistenciaPuerto
+                        rolPersistenciaPuerto,
+                    CifradorClavePuerto
+                        cifradorClavePuerto,
+                    RestauranteConsultaPuerto
+                        restauranteConsultaPuerto,
+                    Clock relojAplicacion) {
+
+        return new CrearEmpleadoCasoUso(
+            usuarioPersistenciaPuerto,
+            rolPersistenciaPuerto,
+            cifradorClavePuerto,
+            restauranteConsultaPuerto,
             relojAplicacion
         );
     }

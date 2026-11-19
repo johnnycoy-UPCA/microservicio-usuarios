@@ -30,3 +30,7 @@ seguridad:
   jwt:
     secreto: ${JWT_SECRETO}
     duracion-milisegundos: ${JWT_DURACION_MILISEGUNDOS:3600000}
+
+servicios:
+  plazoleta:
+    url-base: ${PLAZOLETA_URL_BASE:http://localhost:8082}

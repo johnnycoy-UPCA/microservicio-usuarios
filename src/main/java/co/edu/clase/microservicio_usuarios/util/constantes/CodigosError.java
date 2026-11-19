@@ -11,6 +11,7 @@ public final class CodigosError {
     public static final String ROL_NO_ENCONTRADO = "ROL-001";
     public static final String ROL_PROPIETARIO_NO_CONFIGURADO = "ROL-002";
     public static final String ROL_CLIENTE_NO_CONFIGURADO = "ROL-003";
+    public static final String ROL_EMPLEADO_NO_CONFIGURADO = "ROL-004";
     
     public static final String ERROR_CIFRANDO_CLAVE = "SEG-001";
     
@@ -25,6 +26,9 @@ public final class CodigosError {
     public static final String TOKEN_EXPIRADO = "AUT-004";
     public static final String TOKEN_AUSENTE = "AUT-005";
     public static final String ACCESO_DENEGADO = "AUT-006";
+
+    public static final String RESTAURANTE_NO_VALIDO = "EMP-001";
+    public static final String SERVICIO_PLAZOLETA_NO_DISPONIBLE = "EMP-002";
 
     private CodigosError() {
         throw new IllegalStateException(

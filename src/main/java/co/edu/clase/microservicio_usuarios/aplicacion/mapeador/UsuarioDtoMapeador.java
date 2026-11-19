@@ -1,6 +1,7 @@
 package co.edu.clase.microservicio_usuarios.aplicacion.mapeador;
 
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.respuesta.UsuarioRespuestaDto;
+import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.CrearEmpleadoSolicitudDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.CrearPropietarioSolicitudDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.RegistrarClienteSolicitudDto;
 import co.edu.clase.microservicio_usuarios.dominio.modelo.Usuario;
@@ -53,9 +54,27 @@ public class UsuarioDtoMapeador {
         respuesta.setFechaNacimiento(usuario.getFechaNacimiento());
         respuesta.setCorreo(usuario.getCorreo());
         respuesta.setPerfil(usuario.getRol().getNombre());
+        respuesta.setRestauranteId(usuario.getRestauranteId());
         respuesta.setActivo(usuario.getActivo());
         respuesta.setFechaCreacion(usuario.getFechaCreacion());
 
         return respuesta;
+    }
+
+    public Usuario aModelo(
+            CrearEmpleadoSolicitudDto solicitud) {
+
+        Usuario usuario = new Usuario();
+
+        usuario.setNombre(solicitud.getNombre());
+        usuario.setApellido(solicitud.getApellido());
+        usuario.setDocumentoIdentidad(solicitud.getDocumentoIdentidad());
+        usuario.setCelular(solicitud.getCelular());
+        usuario.setFechaNacimiento(solicitud.getFechaNacimiento());
+        usuario.setCorreo(solicitud.getCorreo());
+        usuario.setClave(solicitud.getClave());
+        usuario.setRestauranteId(solicitud.getRestauranteId());
+
+        return usuario;
     }
 }

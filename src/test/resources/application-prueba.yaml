@@ -20,3 +20,7 @@ seguridad:
   jwt:
     secreto: MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=
     duracion-milisegundos: 3600000
+
+servicios:
+  plazoleta:
+    url-base: http://localhost:8082

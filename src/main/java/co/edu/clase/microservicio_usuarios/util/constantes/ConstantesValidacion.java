@@ -10,14 +10,14 @@ public final class ConstantesValidacion {
     public static final int LONGITUD_MAXIMA_CELULAR = 13;
     public static final int LONGITUD_MAXIMA_CORREO = 100;
     public static final int LONGITUD_MAXIMA_CLAVE_CIFRADA = 100;
-	public static final int LONGITUD_MINIMA_CLAVE = 8;
-	public static final int LONGITUD_MAXIMA_CLAVE = 50;
-
-    public static final String EXPRESION_DOCUMENTO =
-		"^[0-9]+$";
-
-    public static final String EXPRESION_CELULAR =
-		"^\\+?[0-9]{1,12}$";
+    public static final int LONGITUD_MINIMA_CLAVE = 12;
+    public static final int LONGITUD_MAXIMA_CLAVE = 64;
+	public static final String EXPRESION_CLAVE_SEGURA =
+								"^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)"
+								+ "(?=.*[^A-Za-z0-9\\s])"
+								+ "\\S{12,64}$";
+    public static final String EXPRESION_DOCUMENTO = "^[0-9]+$";
+    public static final String EXPRESION_CELULAR = "^\\+?[0-9]{1,12}$";
 
     private ConstantesValidacion() {
         throw new IllegalStateException(

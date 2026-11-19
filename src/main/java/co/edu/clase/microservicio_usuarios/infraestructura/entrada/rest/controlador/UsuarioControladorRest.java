@@ -2,11 +2,14 @@ package co.edu.clase.microservicio_usuarios.infraestructura.entrada.rest.control
 
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.respuesta.UsuarioConsultaRespuestaDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.respuesta.UsuarioRespuestaDto;
+import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.CrearEmpleadoSolicitudDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.CrearPropietarioSolicitudDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.RegistrarClienteSolicitudDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.ConsultarUsuarioHandler;
+import co.edu.clase.microservicio_usuarios.aplicacion.handler.CrearEmpleadoHandler;
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.CrearPropietarioHandler;
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.RegistrarClienteHandler;
+import co.edu.clase.microservicio_usuarios.infraestructura.entrada.seguridad.UsuarioAutenticado;
 import co.edu.clase.microservicio_usuarios.util.constantes.ConstantesApi;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,6 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,15 +40,18 @@ public class UsuarioControladorRest {
     private final CrearPropietarioHandler crearPropietarioHandler;
 	private final ConsultarUsuarioHandler consultarUsuarioHandler;
 	private final RegistrarClienteHandler registrarClienteHandler;
+	private final CrearEmpleadoHandler crearEmpleadoHandler;
 
     public UsuarioControladorRest(
             CrearPropietarioHandler crearPropietarioHandler,
             ConsultarUsuarioHandler consultarUsuarioHandler,
-            RegistrarClienteHandler registrarClienteHandler) {
+            RegistrarClienteHandler registrarClienteHandler,
+			CrearEmpleadoHandler crearEmpleadoHandler) {
 
         this.crearPropietarioHandler = crearPropietarioHandler;
         this.consultarUsuarioHandler = consultarUsuarioHandler;
         this.registrarClienteHandler = registrarClienteHandler;
+		this.crearEmpleadoHandler = crearEmpleadoHandler;
     }
 
     @Operation(
@@ -166,6 +173,58 @@ public class UsuarioControladorRest {
 
 		UsuarioRespuestaDto respuesta =
 				registrarClienteHandler.ejecutar(solicitud);
+
+		return ResponseEntity
+				.status(HttpStatus.CREATED)
+				.body(respuesta);
+	}
+
+	@Operation(
+		summary = "Crear empleado",
+		description =
+			"Crea un empleado asociado a un restaurante "
+			+ "del propietario autenticado"
+	)
+	@SecurityRequirement(name = "autenticacionBearer")
+	@ApiResponses({
+		@ApiResponse(
+			responseCode = "201",
+			description = "Empleado creado correctamente"
+		),
+		@ApiResponse(
+			responseCode = "400",
+			description = "Solicitud o restaurante inválido"
+		),
+		@ApiResponse(
+			responseCode = "401",
+			description = "Token ausente, inválido o expirado"
+		),
+		@ApiResponse(
+			responseCode = "403",
+			description = "Perfil no autorizado o restaurante ajeno"
+		),
+		@ApiResponse(
+			responseCode = "409",
+			description = "Correo o documento ya registrado"
+		),
+		@ApiResponse(
+			responseCode = "502",
+			description = "Microservicio Plazoleta no disponible"
+		)
+	})
+	@PostMapping(ConstantesApi.EMPLEADOS)
+	public ResponseEntity<UsuarioRespuestaDto>
+			crearEmpleado(
+					@Valid @RequestBody
+					CrearEmpleadoSolicitudDto solicitud,
+					@AuthenticationPrincipal
+					UsuarioAutenticado usuarioAutenticado) {
+
+		UsuarioRespuestaDto respuesta =
+				crearEmpleadoHandler.ejecutar(
+						solicitud,
+						usuarioAutenticado.getToken()
+				);
 
 		return ResponseEntity
 				.status(HttpStatus.CREATED)

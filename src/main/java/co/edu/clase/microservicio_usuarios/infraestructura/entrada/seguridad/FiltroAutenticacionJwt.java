@@ -105,7 +105,8 @@ public class FiltroAutenticacionJwt extends OncePerRequestFilter {
 			new UsuarioAutenticado(
 				usuarioId,
 				correo,
-				perfil
+				perfil,
+				token
 			);
 
         UsernamePasswordAuthenticationToken autenticacion =
