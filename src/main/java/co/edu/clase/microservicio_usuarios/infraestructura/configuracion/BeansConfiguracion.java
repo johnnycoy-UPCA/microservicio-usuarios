@@ -5,11 +5,13 @@ import co.edu.clase.microservicio_usuarios.dominio.api.ConsultarUsuarioServicioP
 import co.edu.clase.microservicio_usuarios.dominio.api.CrearEmpleadoServicioPuerto;
 import co.edu.clase.microservicio_usuarios.dominio.api.CrearPropietarioServicioPuerto;
 import co.edu.clase.microservicio_usuarios.dominio.api.RegistrarClienteServicioPuerto;
+import co.edu.clase.microservicio_usuarios.dominio.api.ValidarEmpleadoServicioPuerto;
 import co.edu.clase.microservicio_usuarios.dominio.casouso.AutenticarUsuarioCasoUso;
 import co.edu.clase.microservicio_usuarios.dominio.casouso.ConsultarUsuarioCasoUso;
 import co.edu.clase.microservicio_usuarios.dominio.casouso.CrearEmpleadoCasoUso;
 import co.edu.clase.microservicio_usuarios.dominio.casouso.CrearPropietarioCasoUso;
 import co.edu.clase.microservicio_usuarios.dominio.casouso.RegistrarClienteCasoUso;
+import co.edu.clase.microservicio_usuarios.dominio.casouso.ValidarEmpleadoCasoUso;
 import co.edu.clase.microservicio_usuarios.dominio.spi.CifradorClavePuerto;
 import co.edu.clase.microservicio_usuarios.dominio.spi.RestauranteConsultaPuerto;
 import co.edu.clase.microservicio_usuarios.dominio.spi.RolPersistenciaPuerto;
@@ -122,6 +124,17 @@ public class BeansConfiguracion {
             cifradorClavePuerto,
             restauranteConsultaPuerto,
             relojAplicacion
+        );
+    }
+
+    @Bean
+    public ValidarEmpleadoServicioPuerto
+            validarEmpleadoServicioPuerto(
+                    UsuarioPersistenciaPuerto
+                            usuarioPersistenciaPuerto) {
+
+        return new ValidarEmpleadoCasoUso(
+                usuarioPersistenciaPuerto
         );
     }
 }

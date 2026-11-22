@@ -8,9 +8,9 @@ public final class ConstantesApi {
     public static final String VALIDACION_USUARIO = "/{usuarioId}/validacion";
     public static final String CLIENTES = "/clientes";
     public static final String EMPLEADOS = "/empleados";
-    public static final String VALIDACION_RESTAURANTE_PROPIETARIO =
-                                "/api/v1/restaurantes/{restauranteId}"
-                                + "/validacion-propietario";
+    public static final String VALIDACION_RESTAURANTE_PROPIETARIO = "/api/v1/restaurantes/{restauranteId}"
+                                                                    + "/validacion-propietario";
+    public static final String VALIDACION_EMPLEADO = "/{usuarioId}/validacion-empleado";
 
     private ConstantesApi() {
         throw new IllegalStateException(

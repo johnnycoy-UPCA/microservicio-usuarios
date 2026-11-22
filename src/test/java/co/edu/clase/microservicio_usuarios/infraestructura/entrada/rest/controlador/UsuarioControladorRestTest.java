@@ -8,6 +8,7 @@ import co.edu.clase.microservicio_usuarios.aplicacion.handler.ConsultarUsuarioHa
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.CrearEmpleadoHandler;
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.CrearPropietarioHandler;
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.RegistrarClienteHandler;
+import co.edu.clase.microservicio_usuarios.aplicacion.handler.ValidarEmpleadoHandler;
 import co.edu.clase.microservicio_usuarios.infraestructura.entrada.rest.manejador.ManejadorGlobalExcepciones;
 import co.edu.clase.microservicio_usuarios.infraestructura.entrada.seguridad.UsuarioAutenticado;
 import co.edu.clase.microservicio_usuarios.util.constantes.ConstantesApi;
@@ -54,6 +55,8 @@ class UsuarioControladorRestTest {
 	private RegistrarClienteHandler registrarClienteHandler;
 	@Mock
 	private CrearEmpleadoHandler crearEmpleadoHandler;
+	@Mock
+	private ValidarEmpleadoHandler validarEmpleadoHandler;
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
@@ -65,7 +68,8 @@ class UsuarioControladorRestTest {
 				crearPropietarioHandler,
 				consultarUsuarioHandler,
 				registrarClienteHandler,
-				crearEmpleadoHandler
+				crearEmpleadoHandler,
+				validarEmpleadoHandler
 			);
 
         // Validator validador = Validation
