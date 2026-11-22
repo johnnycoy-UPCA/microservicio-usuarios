@@ -1,5 +1,6 @@
 package co.edu.clase.microservicio_usuarios.infraestructura.entrada.rest.controlador;
 
+import co.edu.clase.microservicio_usuarios.aplicacion.dto.respuesta.EmpleadoValidacionRespuestaDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.respuesta.UsuarioConsultaRespuestaDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.respuesta.UsuarioRespuestaDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.CrearEmpleadoSolicitudDto;
@@ -9,6 +10,7 @@ import co.edu.clase.microservicio_usuarios.aplicacion.handler.ConsultarUsuarioHa
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.CrearEmpleadoHandler;
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.CrearPropietarioHandler;
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.RegistrarClienteHandler;
+import co.edu.clase.microservicio_usuarios.aplicacion.handler.ValidarEmpleadoHandler;
 import co.edu.clase.microservicio_usuarios.infraestructura.entrada.seguridad.UsuarioAutenticado;
 import co.edu.clase.microservicio_usuarios.util.constantes.ConstantesApi;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,17 +43,20 @@ public class UsuarioControladorRest {
 	private final ConsultarUsuarioHandler consultarUsuarioHandler;
 	private final RegistrarClienteHandler registrarClienteHandler;
 	private final CrearEmpleadoHandler crearEmpleadoHandler;
+	private final ValidarEmpleadoHandler validarEmpleadoHandler;
 
     public UsuarioControladorRest(
             CrearPropietarioHandler crearPropietarioHandler,
             ConsultarUsuarioHandler consultarUsuarioHandler,
             RegistrarClienteHandler registrarClienteHandler,
-			CrearEmpleadoHandler crearEmpleadoHandler) {
+			CrearEmpleadoHandler crearEmpleadoHandler,
+			ValidarEmpleadoHandler validarEmpleadoHandler) {
 
         this.crearPropietarioHandler = crearPropietarioHandler;
         this.consultarUsuarioHandler = consultarUsuarioHandler;
         this.registrarClienteHandler = registrarClienteHandler;
 		this.crearEmpleadoHandler = crearEmpleadoHandler;
+		this.validarEmpleadoHandler = validarEmpleadoHandler;
     }
 
     @Operation(
@@ -229,5 +234,48 @@ public class UsuarioControladorRest {
 		return ResponseEntity
 				.status(HttpStatus.CREATED)
 				.body(respuesta);
+	}
+
+	@Operation(
+			summary = "Validar empleado autenticado",
+			description =
+				"Consulta internamente el restaurante "
+				+ "asociado al empleado autenticado"
+	)
+	@SecurityRequirement(name = "autenticacionBearer")
+	@ApiResponses({
+		@ApiResponse(
+			responseCode = "200",
+			description = "Empleado validado"
+		),
+		@ApiResponse(
+			responseCode = "401",
+			description = "Autenticación requerida"
+		),
+		@ApiResponse(
+			responseCode = "403",
+			description =
+					"Perfil incorrecto, empleado inactivo "
+					+ "o identidad no correspondiente"
+		),
+		@ApiResponse(
+			responseCode = "404",
+			description = "Empleado no encontrado"
+		)
+	})
+	@GetMapping(ConstantesApi.VALIDACION_EMPLEADO)
+	public ResponseEntity<
+			EmpleadoValidacionRespuestaDto>
+			validarEmpleado(
+					@PathVariable Long usuarioId,
+					@AuthenticationPrincipal
+					UsuarioAutenticado usuarioAutenticado) {
+
+		return ResponseEntity.ok(
+				validarEmpleadoHandler.ejecutar(
+						usuarioId,
+						usuarioAutenticado.getUsuarioId()
+				)
+		);
 	}
 }

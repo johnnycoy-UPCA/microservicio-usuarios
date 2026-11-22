@@ -29,6 +29,10 @@ public final class CodigosError {
 
     public static final String RESTAURANTE_NO_VALIDO = "EMP-001";
     public static final String SERVICIO_PLAZOLETA_NO_DISPONIBLE = "EMP-002";
+    public static final String EMPLEADO_NO_ENCONTRADO = "EMP-003";
+    public static final String EMPLEADO_INACTIVO = "EMP-004";
+    public static final String EMPLEADO_SIN_RESTAURANTE = "EMP-005";
+    public static final String EMPLEADO_NO_CORRESPONDE = "EMP-006";
 
     private CodigosError() {
         throw new IllegalStateException(

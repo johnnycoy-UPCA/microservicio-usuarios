@@ -119,6 +119,19 @@ public final class MensajesError {
 
 	public static final String RESTAURANTE_OBLIGATORIO =
 			"El identificador del restaurante es obligatorio";
+
+	public static final String EMPLEADO_NO_ENCONTRADO =
+			"El empleado solicitado no fue encontrado";
+
+	public static final String EMPLEADO_INACTIVO =
+			"El empleado se encuentra inactivo";
+
+	public static final String EMPLEADO_SIN_RESTAURANTE =
+			"El empleado no tiene un restaurante asociado";
+
+	public static final String EMPLEADO_NO_CORRESPONDE =
+			"El usuario autenticado no corresponde "
+			+ "al empleado solicitado";
 			
 	private MensajesError() {
 		throw new IllegalStateException(

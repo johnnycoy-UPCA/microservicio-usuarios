@@ -8,6 +8,7 @@ import co.edu.clase.microservicio_usuarios.util.enumeraciones.PerfilUsuario;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -95,6 +96,14 @@ public class SeguridadDesarrolloConfiguracion {
 					)
 					.hasRole(
 						PerfilUsuario.PROPIETARIO.name()
+					)
+					.requestMatchers(
+						HttpMethod.GET,
+						ConstantesApi.API_USUARIOS
+						+ "/*/validacion-empleado"
+					)
+					.hasRole(
+						PerfilUsuario.EMPLEADO.name()
 					)
 					.anyRequest()
 					.authenticated()
