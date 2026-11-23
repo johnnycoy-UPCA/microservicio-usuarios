@@ -11,6 +11,8 @@ public final class ConstantesSeguridad {
     public static final String EMISOR_TOKEN = "microservicio-usuarios";
     public static final String ATRIBUTO_CODIGO_ERROR = "codigoErrorAutenticacion";
     public static final String ATRIBUTO_MENSAJE_ERROR = "mensajeErrorAutenticacion";
+    public static final String ENCABEZADO_API_KEY_INTERNA = "X-Internal-Api-Key";
+    public static final String AUTORIDAD_INTERNA = "ROLE_INTERNAL";
     
     private ConstantesSeguridad() {
         throw new IllegalStateException(

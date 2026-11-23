@@ -26,6 +26,7 @@ public final class CodigosError {
     public static final String TOKEN_EXPIRADO = "AUT-004";
     public static final String TOKEN_AUSENTE = "AUT-005";
     public static final String ACCESO_DENEGADO = "AUT-006";
+    public static final String CREDENCIAL_INTERNA_INVALIDA = "AUT-007";
 
     public static final String RESTAURANTE_NO_VALIDO = "EMP-001";
     public static final String SERVICIO_PLAZOLETA_NO_DISPONIBLE = "EMP-002";
@@ -33,6 +34,11 @@ public final class CodigosError {
     public static final String EMPLEADO_INACTIVO = "EMP-004";
     public static final String EMPLEADO_SIN_RESTAURANTE = "EMP-005";
     public static final String EMPLEADO_NO_CORRESPONDE = "EMP-006";
+
+    public static final String CLIENTE_NO_ENCONTRADO = "CLI-003";
+    public static final String CLIENTE_INACTIVO = "CLI-004";
+    public static final String USUARIO_NO_ES_CLIENTE = "CLI-005";
+    public static final String CELULAR_CLIENTE_NO_DISPONIBLE = "CLI-006";
 
     private CodigosError() {
         throw new IllegalStateException(

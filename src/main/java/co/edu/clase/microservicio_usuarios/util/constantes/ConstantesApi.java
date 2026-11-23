@@ -11,6 +11,7 @@ public final class ConstantesApi {
     public static final String VALIDACION_RESTAURANTE_PROPIETARIO = "/api/v1/restaurantes/{restauranteId}"
                                                                     + "/validacion-propietario";
     public static final String VALIDACION_EMPLEADO = "/{usuarioId}/validacion-empleado";
+    public static final String CONTACTO_USUARIO = "/{usuarioId}/contacto";
 
     private ConstantesApi() {
         throw new IllegalStateException(

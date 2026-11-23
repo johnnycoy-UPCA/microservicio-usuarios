@@ -1,11 +1,13 @@
 package co.edu.clase.microservicio_usuarios.infraestructura.entrada.rest.controlador;
 
+import co.edu.clase.microservicio_usuarios.aplicacion.dto.respuesta.ContactoClienteRespuestaDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.respuesta.EmpleadoValidacionRespuestaDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.respuesta.UsuarioConsultaRespuestaDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.respuesta.UsuarioRespuestaDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.CrearEmpleadoSolicitudDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.CrearPropietarioSolicitudDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.RegistrarClienteSolicitudDto;
+import co.edu.clase.microservicio_usuarios.aplicacion.handler.ConsultarContactoClienteHandler;
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.ConsultarUsuarioHandler;
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.CrearEmpleadoHandler;
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.CrearPropietarioHandler;
@@ -44,19 +46,22 @@ public class UsuarioControladorRest {
 	private final RegistrarClienteHandler registrarClienteHandler;
 	private final CrearEmpleadoHandler crearEmpleadoHandler;
 	private final ValidarEmpleadoHandler validarEmpleadoHandler;
+	private final ConsultarContactoClienteHandler consultarContactoClienteHandler;
 
     public UsuarioControladorRest(
             CrearPropietarioHandler crearPropietarioHandler,
             ConsultarUsuarioHandler consultarUsuarioHandler,
             RegistrarClienteHandler registrarClienteHandler,
 			CrearEmpleadoHandler crearEmpleadoHandler,
-			ValidarEmpleadoHandler validarEmpleadoHandler) {
+			ValidarEmpleadoHandler validarEmpleadoHandler,
+			ConsultarContactoClienteHandler consultarContactoClienteHandler) {
 
         this.crearPropietarioHandler = crearPropietarioHandler;
         this.consultarUsuarioHandler = consultarUsuarioHandler;
         this.registrarClienteHandler = registrarClienteHandler;
 		this.crearEmpleadoHandler = crearEmpleadoHandler;
 		this.validarEmpleadoHandler = validarEmpleadoHandler;
+		this.consultarContactoClienteHandler = consultarContactoClienteHandler;
     }
 
     @Operation(
@@ -276,6 +281,24 @@ public class UsuarioControladorRest {
 						usuarioId,
 						usuarioAutenticado.getUsuarioId()
 				)
+		);
+	}
+
+	@Operation(
+			summary = "Consultar contacto del cliente",
+			description =
+				"Consulta internamente el celular "
+				+ "de un cliente activo"
+	)
+	@SecurityRequirement(name = "apiKeyInterna")
+	@GetMapping(ConstantesApi.CONTACTO_USUARIO)
+	public ResponseEntity<ContactoClienteRespuestaDto>
+			consultarContacto(
+					@PathVariable Long usuarioId) {
+
+		return ResponseEntity.ok(
+				consultarContactoClienteHandler
+						.ejecutar(usuarioId)
 		);
 	}
 }
