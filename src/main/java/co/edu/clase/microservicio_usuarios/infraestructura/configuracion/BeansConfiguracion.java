@@ -1,6 +1,7 @@
 package co.edu.clase.microservicio_usuarios.infraestructura.configuracion;
 
 import co.edu.clase.microservicio_usuarios.dominio.api.AutenticarUsuarioServicioPuerto;
+import co.edu.clase.microservicio_usuarios.dominio.api.ConsultarContactoClienteServicioPuerto;
 import co.edu.clase.microservicio_usuarios.dominio.api.ConsultarUsuarioServicioPuerto;
 import co.edu.clase.microservicio_usuarios.dominio.api.CrearEmpleadoServicioPuerto;
 import co.edu.clase.microservicio_usuarios.dominio.api.CrearPropietarioServicioPuerto;
@@ -12,6 +13,7 @@ import co.edu.clase.microservicio_usuarios.dominio.casouso.CrearEmpleadoCasoUso;
 import co.edu.clase.microservicio_usuarios.dominio.casouso.CrearPropietarioCasoUso;
 import co.edu.clase.microservicio_usuarios.dominio.casouso.RegistrarClienteCasoUso;
 import co.edu.clase.microservicio_usuarios.dominio.casouso.ValidarEmpleadoCasoUso;
+import co.edu.clase.microservicio_usuarios.dominio.casouso.ConsultarContactoClienteCasoUso;
 import co.edu.clase.microservicio_usuarios.dominio.spi.CifradorClavePuerto;
 import co.edu.clase.microservicio_usuarios.dominio.spi.RestauranteConsultaPuerto;
 import co.edu.clase.microservicio_usuarios.dominio.spi.RolPersistenciaPuerto;
@@ -134,6 +136,17 @@ public class BeansConfiguracion {
                             usuarioPersistenciaPuerto) {
 
         return new ValidarEmpleadoCasoUso(
+                usuarioPersistenciaPuerto
+        );
+    }
+
+    @Bean
+    public ConsultarContactoClienteServicioPuerto
+            consultarContactoClienteServicioPuerto(
+                    UsuarioPersistenciaPuerto
+                            usuarioPersistenciaPuerto) {
+
+        return new ConsultarContactoClienteCasoUso(
                 usuarioPersistenciaPuerto
         );
     }

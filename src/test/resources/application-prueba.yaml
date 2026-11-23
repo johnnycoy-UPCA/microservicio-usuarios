@@ -20,6 +20,8 @@ seguridad:
   jwt:
     secreto: MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=
     duracion-milisegundos: 3600000
+  interna:
+    api-key: clave-interna-usuarios-prueba-2026
 
 servicios:
   plazoleta:

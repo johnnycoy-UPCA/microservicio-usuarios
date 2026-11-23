@@ -1,5 +1,6 @@
 package co.edu.clase.microservicio_usuarios.infraestructura.configuracion;
 
+import co.edu.clase.microservicio_usuarios.infraestructura.entrada.seguridad.FiltroApiKeyInterna;
 import co.edu.clase.microservicio_usuarios.infraestructura.entrada.seguridad.FiltroAutenticacionJwt;
 import co.edu.clase.microservicio_usuarios.infraestructura.entrada.seguridad.ManejadorAccesoDenegado;
 import co.edu.clase.microservicio_usuarios.infraestructura.entrada.seguridad.PuntoEntradaNoAutorizado;
@@ -19,15 +20,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SeguridadDesarrolloConfiguracion {
 
     private final FiltroAutenticacionJwt filtroAutenticacionJwt;
+	private final FiltroApiKeyInterna filtroApiKeyInterna;
     private final PuntoEntradaNoAutorizado puntoEntradaNoAutorizado;
     private final ManejadorAccesoDenegado manejadorAccesoDenegado;
 
     public SeguridadDesarrolloConfiguracion(
             FiltroAutenticacionJwt filtroAutenticacionJwt,
+			FiltroApiKeyInterna filtroApiKeyInterna,
             PuntoEntradaNoAutorizado puntoEntradaNoAutorizado,
             ManejadorAccesoDenegado manejadorAccesoDenegado) {
 
         this.filtroAutenticacionJwt = filtroAutenticacionJwt;
+		this.filtroApiKeyInterna = filtroApiKeyInterna;
         this.puntoEntradaNoAutorizado = puntoEntradaNoAutorizado;
         this.manejadorAccesoDenegado = manejadorAccesoDenegado;
     }
@@ -79,6 +83,12 @@ public class SeguridadDesarrolloConfiguracion {
 					)
 					.permitAll()
 					.requestMatchers(
+							HttpMethod.GET,
+							ConstantesApi.API_USUARIOS
+									+ "/*/contacto"
+					)
+					.hasRole("INTERNAL")
+					.requestMatchers(
 						ConstantesApi.API_USUARIOS
 						+ ConstantesApi.PROPIETARIOS
 					)
@@ -108,11 +118,15 @@ public class SeguridadDesarrolloConfiguracion {
 					.anyRequest()
 					.authenticated()
                 )
-                .addFilterBefore(
-					filtroAutenticacionJwt,
-					UsernamePasswordAuthenticationFilter.class
-                );
-
+				.addFilterBefore(
+						filtroApiKeyInterna,
+						// FiltroAutenticacionJwt.class
+						UsernamePasswordAuthenticationFilter.class
+				)
+				.addFilterBefore(
+						filtroAutenticacionJwt,
+						UsernamePasswordAuthenticationFilter.class
+				);
         return seguridadHttp.build();
     }
 }

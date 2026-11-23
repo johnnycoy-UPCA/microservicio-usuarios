@@ -14,7 +14,10 @@ import co.edu.clase.microservicio_usuarios.util.constantes.ConstantesSeguridad;
 @Configuration
 public class OpenApiConfiguracion {
 
-    private static final String ESQUEMA_SEGURIDAD = "autenticacionBearer";
+    // private static final String ESQUEMA_SEGURIDAD = "autenticacionBearer";
+	private static final String ESQUEMA_AUTENTICACION_BEARER = "autenticacionBearer";
+
+	private static final String ESQUEMA_API_KEY_INTERNA = "apiKeyInterna";
 
     @Bean
     public OpenAPI documentacionApi() {
@@ -33,13 +36,20 @@ public class OpenApiConfiguracion {
 			)
 			.components(new Components()
 				.addSecuritySchemes(
-					ESQUEMA_SEGURIDAD,
+					ESQUEMA_AUTENTICACION_BEARER,
 					new SecurityScheme()
 						.name(ConstantesSeguridad.ENCABEZADO_AUTORIZACION)
 						.type(SecurityScheme.Type.HTTP)
 						.scheme("bearer")
 						.bearerFormat("JWT")
 				)
+                .addSecuritySchemes(
+                        ESQUEMA_API_KEY_INTERNA,
+                        new SecurityScheme()
+                                .type(SecurityScheme.Type.APIKEY)
+                                .in(SecurityScheme.In.HEADER)
+                                .name(ConstantesSeguridad.ENCABEZADO_API_KEY_INTERNA)
+                )
 			);
     }
 }

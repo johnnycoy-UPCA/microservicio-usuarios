@@ -30,6 +30,8 @@ seguridad:
   jwt:
     secreto: ${JWT_SECRETO}
     duracion-milisegundos: ${JWT_DURACION_MILISEGUNDOS:3600000}
+  interna:
+    api-key: ${USUARIOS_API_KEY}
 
 servicios:
   plazoleta:

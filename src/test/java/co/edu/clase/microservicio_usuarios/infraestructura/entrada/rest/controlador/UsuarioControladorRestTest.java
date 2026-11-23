@@ -4,6 +4,7 @@ import co.edu.clase.microservicio_usuarios.aplicacion.dto.respuesta.UsuarioRespu
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.CrearEmpleadoSolicitudDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.CrearPropietarioSolicitudDto;
 import co.edu.clase.microservicio_usuarios.aplicacion.dto.solicitud.RegistrarClienteSolicitudDto;
+import co.edu.clase.microservicio_usuarios.aplicacion.handler.ConsultarContactoClienteHandler;
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.ConsultarUsuarioHandler;
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.CrearEmpleadoHandler;
 import co.edu.clase.microservicio_usuarios.aplicacion.handler.CrearPropietarioHandler;
@@ -57,6 +58,8 @@ class UsuarioControladorRestTest {
 	private CrearEmpleadoHandler crearEmpleadoHandler;
 	@Mock
 	private ValidarEmpleadoHandler validarEmpleadoHandler;
+	@Mock
+	private ConsultarContactoClienteHandler consultarContactoClienteHandler;
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
@@ -69,7 +72,8 @@ class UsuarioControladorRestTest {
 				consultarUsuarioHandler,
 				registrarClienteHandler,
 				crearEmpleadoHandler,
-				validarEmpleadoHandler
+				validarEmpleadoHandler,
+				consultarContactoClienteHandler
 			);
 
         // Validator validador = Validation

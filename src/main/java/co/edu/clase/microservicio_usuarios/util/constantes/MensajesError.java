@@ -132,6 +132,21 @@ public final class MensajesError {
 	public static final String EMPLEADO_NO_CORRESPONDE =
 			"El usuario autenticado no corresponde "
 			+ "al empleado solicitado";
+
+	public static final String CLIENTE_NO_ENCONTRADO =
+			"El cliente solicitado no fue encontrado";
+
+	public static final String CLIENTE_INACTIVO =
+			"El cliente se encuentra inactivo";
+
+	public static final String USUARIO_NO_ES_CLIENTE =
+			"El usuario solicitado no tiene perfil CLIENTE";
+
+	public static final String CELULAR_CLIENTE_NO_DISPONIBLE =
+			"El cliente no tiene un número celular disponible";
+
+	public static final String CREDENCIAL_INTERNA_INVALIDA =
+			"Credencial interna inválida";
 			
 	private MensajesError() {
 		throw new IllegalStateException(
